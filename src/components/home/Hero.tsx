@@ -1,29 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { useUIStore } from '../../store/useUIStore';
 
 const Hero: React.FC = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [imgLoaded, setImgLoaded] = useState(false);
+  const { heroImageLoaded, setHeroImageLoaded, loading } = useUIStore();
+  const [isRevealStarted, setIsRevealStarted] = useState(false);
 
   useEffect(() => {
-    // Only reveal content if BOTH the minimum timer has passed AND the image is loaded.
-    const timer = setTimeout(() => {
-      if (imgLoaded) {
-        setIsLoaded(true);
-      }
-    }, 2400);
-
-    return () => clearTimeout(timer);
-  }, [imgLoaded]);
-
-  // Fallback: If image loads LATE (after 2.4s), trigger immediately
-  useEffect(() => {
-    if (imgLoaded) {
+    // Reveal content as soon as image is ready. 
+    // This allows the Hero to be visible DURING the preloader's slide-up animation.
+    if (heroImageLoaded) {
       const timer = setTimeout(() => {
-        setIsLoaded(true);
-      }, 2400); // We still respect the preloader timing minimum
+        setIsRevealStarted(true);
+      }, 50);
       return () => clearTimeout(timer);
     }
-  }, [imgLoaded]);
+  }, [heroImageLoaded]);
 
   return (
     // Use 100dvh (dynamic viewport height) to account for mobile browser address bars
@@ -32,11 +23,11 @@ const Hero: React.FC = () => {
       <div className="absolute inset-0 z-0 overflow-hidden bg-brand-black">
         <img
           src="/images/hero.webp"
-          onLoad={() => setImgLoaded(true)}
+          onLoad={() => setHeroImageLoaded(true)}
           alt="Abstract portrait with neon lighting representing digital design"
           width="2864"
           height="1600"
-          className={`w-full h-full object-cover opacity-50 transition-transform duration-[2000ms] ease-out will-change-transform ${isLoaded ? 'scale-100' : 'scale-110'}`}
+          className={`w-full h-full object-cover opacity-50 transition-all duration-[2000ms] ease-out will-change-transform ${isRevealStarted ? 'scale-100' : 'scale-110'}`}
           loading="eager"
           // @ts-ignore
           fetchPriority="high"
@@ -46,7 +37,7 @@ const Hero: React.FC = () => {
             objectFit: 'cover',
             objectPosition: 'center',
             transformStyle: 'preserve-3d',
-            opacity: isLoaded ? 0.5 : 0 // Fade in image only when ready
+            opacity: isRevealStarted ? 0.5 : 0 // Fade in image only when ready
           }}
         />
         {/* Adjusted overlay for the red aesthetic using mix-blend-overlay on the gradient instead of the image */}
@@ -59,14 +50,14 @@ const Hero: React.FC = () => {
         {/* Top Meta Data - Slide Down Entrance */}
         <div className="flex justify-between items-start overflow-hidden">
           <div
-            className={`text-sm font-mono tracking-widest text-brand-red transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+            className={`text-sm font-mono tracking-widest text-brand-red transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isRevealStarted ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
             style={{ transitionDelay: '100ms' }}
           >
             © 21-26
           </div>
 
           <div
-            className={`hidden md:flex flex-col gap-2 text-right text-sm font-mono text-gray-300 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+            className={`hidden md:flex flex-col gap-2 text-right text-sm font-mono text-gray-300 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isRevealStarted ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
             style={{ transitionDelay: '200ms' }}
           >
             <span>UX/UI Design</span>
@@ -81,7 +72,7 @@ const Hero: React.FC = () => {
           {/* Aggressively increased padding to ensure 'g' tail is not clipped */}
           <div className="overflow-hidden pt-[2vw] -mt-[2vw] pb-[12vw] -mb-[12vw]">
             <h1
-              className={`text-[15vw] leading-[0.9] font-display font-bold tracking-tighter text-white mix-blend-difference transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+              className={`text-[15vw] leading-[0.9] font-display font-bold tracking-tighter text-white mix-blend-difference transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isRevealStarted ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
               style={{ transitionDelay: '300ms', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
             >
               Digital
@@ -91,7 +82,7 @@ const Hero: React.FC = () => {
           {/* Divider Line - Expand Width */}
           <div className="w-full relative mt-2 md:mt-4">
             <div
-              className={`absolute top-0 left-0 h-px bg-white/20 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isLoaded ? 'w-full' : 'w-0'}`}
+              className={`absolute top-0 left-0 h-px bg-white/20 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isRevealStarted ? 'w-full' : 'w-0'}`}
               style={{ transitionDelay: '500ms' }}
             ></div>
           </div>
@@ -100,7 +91,7 @@ const Hero: React.FC = () => {
             {/* Sub Title 'Design Studio' - Masked Reveal Up */}
             <div className="overflow-hidden pb-[4vw] -mb-[4vw]">
               <span
-                className={`block text-[8vw] md:text-[6vw] leading-none font-display font-bold tracking-tighter text-brand-red transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'}`}
+                className={`block text-[8vw] md:text-[6vw] leading-none font-display font-bold tracking-tighter text-brand-red transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isRevealStarted ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'}`}
                 style={{ transitionDelay: '600ms', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
               >
                 Design Studio
@@ -110,7 +101,7 @@ const Hero: React.FC = () => {
             {/* Paragraph - Fade In & Slide Up */}
             <div className="overflow-hidden md:text-right mt-4 md:mt-0">
               <p
-                className={`max-w-md text-gray-300 text-sm md:text-base pb-2 transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+                className={`max-w-md text-gray-300 text-sm md:text-base pb-2 transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isRevealStarted ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
                 style={{ transitionDelay: '800ms' }}
               >
                 We create digital designs that help brands move faster and convert better. Your business needs more than just a website. It needs results.
