@@ -1,0 +1,126 @@
+import React, { useEffect, useState } from 'react';
+
+const Hero: React.FC = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  useEffect(() => {
+    // Only reveal content if BOTH the minimum timer has passed AND the image is loaded.
+    const timer = setTimeout(() => {
+      if (imgLoaded) {
+        setIsLoaded(true);
+      }
+    }, 2400);
+
+    return () => clearTimeout(timer);
+  }, [imgLoaded]);
+
+  // Fallback: If image loads LATE (after 2.4s), trigger immediately
+  useEffect(() => {
+    if (imgLoaded) {
+      const timer = setTimeout(() => {
+        setIsLoaded(true);
+      }, 2400); // We still respect the preloader timing minimum
+      return () => clearTimeout(timer);
+    }
+  }, [imgLoaded]);
+
+  return (
+    // Use 100dvh (dynamic viewport height) to account for mobile browser address bars
+    <section className="relative w-full h-[100dvh] min-h-[600px] bg-brand-black text-white overflow-hidden">
+      {/* Background Image with Overlay & Slow Zoom Effect */}
+      <div className="absolute inset-0 z-0 overflow-hidden bg-brand-black">
+        <img
+          src="/images/hero.webp"
+          onLoad={() => setImgLoaded(true)}
+          alt="Abstract portrait with neon lighting representing digital design"
+          width="2864"
+          height="1600"
+          className={`w-full h-full object-cover opacity-50 transition-transform duration-[2000ms] ease-out will-change-transform ${isLoaded ? 'scale-100' : 'scale-110'}`}
+          loading="eager"
+          // @ts-ignore
+          fetchPriority="high"
+          style={{
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            transformStyle: 'preserve-3d',
+            opacity: isLoaded ? 0.5 : 0 // Fade in image only when ready
+          }}
+        />
+        {/* Adjusted overlay for the red aesthetic using mix-blend-overlay on the gradient instead of the image */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-brand-red/50 mix-blend-overlay"></div>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-between pt-24 pb-12 md:pt-32">
+
+        {/* Top Meta Data - Slide Down Entrance */}
+        <div className="flex justify-between items-start overflow-hidden">
+          <div
+            className={`text-sm font-mono tracking-widest text-brand-red transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+            style={{ transitionDelay: '100ms' }}
+          >
+            © 21-26
+          </div>
+
+          <div
+            className={`hidden md:flex flex-col gap-2 text-right text-sm font-mono text-gray-300 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+            style={{ transitionDelay: '200ms' }}
+          >
+            <span>UX/UI Design</span>
+            <span>Development</span>
+            <span>Brand Identity</span>
+            <span>Ongoing Support</span>
+          </div>
+        </div>
+
+        <div className="mt-auto">
+          {/* Main Title 'Digital' - Masked Reveal Up */}
+          {/* Aggressively increased padding to ensure 'g' tail is not clipped */}
+          <div className="overflow-hidden pt-[2vw] -mt-[2vw] pb-[12vw] -mb-[12vw]">
+            <h1
+              className={`text-[15vw] leading-[0.9] font-display font-bold tracking-tighter text-white mix-blend-difference transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+              style={{ transitionDelay: '300ms', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
+            >
+              Digital
+            </h1>
+          </div>
+
+          {/* Divider Line - Expand Width */}
+          <div className="w-full relative mt-2 md:mt-4">
+            <div
+              className={`absolute top-0 left-0 h-px bg-white/20 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isLoaded ? 'w-full' : 'w-0'}`}
+              style={{ transitionDelay: '500ms' }}
+            ></div>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-end justify-between w-full pt-6 mt-2">
+            {/* Sub Title 'Design Studio' - Masked Reveal Up */}
+            <div className="overflow-hidden pb-[4vw] -mb-[4vw]">
+              <span
+                className={`block text-[8vw] md:text-[6vw] leading-none font-display font-bold tracking-tighter text-brand-red transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'}`}
+                style={{ transitionDelay: '600ms', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
+              >
+                Design Studio
+              </span>
+            </div>
+
+            {/* Paragraph - Fade In & Slide Up */}
+            <div className="overflow-hidden md:text-right mt-4 md:mt-0">
+              <p
+                className={`max-w-md text-gray-300 text-sm md:text-base pb-2 transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+                style={{ transitionDelay: '800ms' }}
+              >
+                We create digital designs that help brands move faster and convert better. Your business needs more than just a website. It needs results.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Hero;
