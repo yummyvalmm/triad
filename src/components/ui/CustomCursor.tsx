@@ -3,6 +3,8 @@ import { motion, useMotionValue, useSpring, animate } from 'framer-motion';
 
 const CustomCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
 
@@ -16,6 +18,20 @@ const CustomCursor: React.FC = () => {
   const cursorY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
+    const checkDevice = () => {
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = window.innerWidth <= 1024; // Tablet landscape and below
+      setIsMobile(hasTouch || isSmallScreen);
+    };
+
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+
+    if (isMobile) {
+      document.body.style.cursor = 'auto';
+      return () => window.removeEventListener('resize', checkDevice);
+    }
+
     const moveMouse = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -32,10 +48,6 @@ const CustomCursor: React.FC = () => {
 
       if (magneticElement) {
         setIsHovering(true);
-
-        // Optional: We can add logic here to "snap" the cursor to the center
-        // or let the button move towards the cursor (Inverse Magnetism)
-        // For now, we scale the cursor to indicate interaction.
       } else {
         setIsHovering(false);
       }
@@ -46,21 +58,25 @@ const CustomCursor: React.FC = () => {
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mouseover', handleMouseOver);
 
-    // Hide default cursor
+    // Hide default cursor on desktop
     document.body.style.cursor = 'none';
 
     return () => {
+      window.removeEventListener('resize', checkDevice);
       window.removeEventListener('mousemove', moveMouse);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mouseover', handleMouseOver);
       document.body.style.cursor = 'auto';
     };
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <>
       {/* Main Dot */}
+      {/* @ts-ignore */}
       <motion.div
         className="fixed top-0 left-0 w-4 h-4 rounded-full bg-brand-red pointer-events-none z-[9999] mix-blend-difference"
         style={{
@@ -73,6 +89,7 @@ const CustomCursor: React.FC = () => {
       />
 
       {/* Trailing Ring (Optional - keeping it minimal for "High End" feel) */}
+      {/* @ts-ignore */}
       <motion.div
         className="fixed top-0 left-0 w-10 h-10 border border-white/30 rounded-full pointer-events-none z-[9998]"
         style={{
