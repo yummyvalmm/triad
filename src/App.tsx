@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import MainLayout from './layouts/MainLayout';
 import Preloader from './components/ui/Preloader';
 
@@ -18,6 +19,7 @@ const App: React.FC = () => {
           <Route path="/checkout" element={<Checkout />} />
         </Routes>
       </Suspense>
+      <SpeedInsights />
     </BrowserRouter>
   );
 };
