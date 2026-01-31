@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { ArrowRight, Instagram, Twitter, Linkedin, Dribbble, Loader2, Check, AlertCircle, Mail, Clock } from 'lucide-react';
 import Reveal from '../ui/Reveal';
-
-// --- CONFIGURATION ---
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAybjealpEpG-yiZdI4JtKFRg7LjhJyRzlya-Kv-YcCl8n9qoi_Le1GvDFrydlp04_/exec';
+import { useIntersectionObserver } from '../../hooks';
+import { CONFIG } from '../../constants';
+import { logger } from '../../utils';
 
 const Footer: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -12,47 +12,11 @@ const Footer: React.FC = () => {
         message: ''
     });
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-    const [isVisible, setIsVisible] = useState(false);
-    const footerRef = useRef<HTMLElement>(null);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (!footerRef.current) return;
-
-            // If already visible, remove listener and return (Optimization)
-            if (isVisible) {
-                window.removeEventListener('scroll', handleScroll);
-                return;
-            }
-
-            const winHeight = window.innerHeight;
-            const docHeight = document.documentElement.scrollHeight;
-            const scrollY = window.scrollY;
-            const footerHeight = footerRef.current.offsetHeight;
-
-            // Calculate the maximum scrollable distance
-            const maxScroll = docHeight - winHeight;
-
-            // The footer starts being revealed when we are 'footerHeight' away from the bottom
-            const revealStart = maxScroll - footerHeight;
-
-            // Trigger animation when 20% of the footer is revealed to the user
-            const triggerPoint = revealStart + (footerHeight * 0.2);
-
-            // Only trigger if we have scrolled past this point
-            if (scrollY > triggerPoint) {
-                setIsVisible(true);
-                // Cleanup immediately after triggering
-                window.removeEventListener('scroll', handleScroll);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        // Check once on mount to handle cases where we land at the bottom
-        handleScroll();
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isVisible]);
+    const { ref: footerRef, isVisible } = useIntersectionObserver<HTMLElement>({
+        threshold: CONFIG.FOOTER_VISIBILITY_THRESHOLD,
+        freezeOnceVisible: true
+    });
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -72,8 +36,8 @@ const Footer: React.FC = () => {
         setStatus('submitting');
 
         try {
-            if (!GOOGLE_SCRIPT_URL) {
-                console.log('Simulating submission to: ', formData);
+            if (!CONFIG.GOOGLE_SCRIPT_URL) {
+                logger.info('Form submission (development mode)', formData);
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 setStatus('success');
                 setFormData({ name: '', email: '', message: '' });
@@ -86,7 +50,7 @@ const Footer: React.FC = () => {
             data.append('message', formData.message);
             data.append('timestamp', new Date().toISOString());
 
-            await fetch(GOOGLE_SCRIPT_URL, {
+            await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 body: data,
                 mode: 'no-cors'
@@ -95,7 +59,7 @@ const Footer: React.FC = () => {
             setStatus('success');
             setFormData({ name: '', email: '', message: '' });
         } catch (error) {
-            console.error('Submission Error:', error);
+            logger.error('Form submission failed', error);
             setStatus('error');
         }
     };
@@ -293,12 +257,21 @@ const Footer: React.FC = () => {
                                 <Reveal forceTrigger={isVisible} delay={600}>
                                     <div>
                                         <h4 className="font-bold mb-4">Stay connected</h4>
-                                        <div className="flex flex-col gap-2 text-gray-400 text-sm">
+                                        <div className="flex flex-col gap-3 text-gray-400 text-sm">
                                             <p>Join our newsletter for latest trends.</p>
-                                            <form className="flex items-center gap-2 border-b border-gray-700 pb-1 mt-2">
+                                            <form className="flex items-center gap-3 mt-2 bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-3 hover:border-gray-600 focus-within:border-brand-red transition-colors">
                                                 <label htmlFor="newsletter-email" className="sr-only">Newsletter Email</label>
-                                                <input id="newsletter-email" type="email" placeholder="E-mail" className="bg-transparent focus:outline-none text-white w-full placeholder-gray-600" />
-                                                <button type="submit" aria-label="Subscribe" className="hover:text-brand-red transition-colors text-white">
+                                                <input
+                                                    id="newsletter-email"
+                                                    type="email"
+                                                    placeholder="your@email.com"
+                                                    className="bg-transparent focus:outline-none text-white w-full placeholder-gray-500 text-sm"
+                                                />
+                                                <button
+                                                    type="submit"
+                                                    aria-label="Subscribe"
+                                                    className="p-2 bg-brand-red hover:bg-brand-accent text-white rounded-md transition-all hover:scale-105 active:scale-95"
+                                                >
                                                     <ArrowRight size={16} />
                                                 </button>
                                             </form>
@@ -306,11 +279,15 @@ const Footer: React.FC = () => {
                                     </div>
                                 </Reveal>
                             </div>
-                            <div className="flex gap-4">
+                            <div className="flex gap-3">
                                 {[Twitter, Instagram, Linkedin, Dribbble].map((Icon, i) => (
                                     <Reveal key={i} forceTrigger={isVisible} delay={700 + (i * 50)}>
-                                        <a href="#" data-magnetic className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center hover:bg-brand-red hover:border-brand-red transition-colors text-white">
-                                            <Icon size={18} />
+                                        <a
+                                            href="#"
+                                            data-magnetic
+                                            className="w-12 h-12 rounded-full border border-gray-600 flex items-center justify-center hover:bg-brand-red hover:border-brand-red hover:scale-110 active:scale-95 transition-all duration-300 text-gray-400 hover:text-white"
+                                        >
+                                            <Icon size={20} />
                                         </a>
                                     </Reveal>
                                 ))}

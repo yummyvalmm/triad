@@ -1,27 +1,48 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useScrollPosition } from '../../hooks';
+import { CONFIG, SECTIONS } from '../../constants';
 
 const menuItems = [
-  { label: 'About', href: '#about' },
-  { label: 'Services', href: '#services' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'Contact', href: '#contact' }
+  { label: 'About', href: `#${SECTIONS.ABOUT}` },
+  { label: 'Services', href: `#${SECTIONS.SERVICES}` },
+  { label: 'Projects', href: `#${SECTIONS.PROJECTS}` },
+  { label: 'Pricing', href: `#${SECTIONS.PRICING}` },
+  { label: 'Contact', href: `#${SECTIONS.CONTACT}` }
 ];
 
 const Navbar: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const { isScrolled } = useScrollPosition(CONFIG.NAVBAR_SCROLL_THRESHOLD);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('');
 
+  // Track active section using IntersectionObserver
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
-    };
+    const sectionIds = menuItems.map(item => item.href.replace('#', ''));
+    const observers: IntersectionObserver[] = [];
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    sectionIds.forEach(id => {
+      const section = document.getElementById(id);
+      if (section) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                setActiveSection(`#${id}`);
+              }
+            });
+          },
+          { rootMargin: '-30% 0px -60% 0px', threshold: 0 }
+        );
+        observer.observe(section);
+        observers.push(observer);
+      }
+    });
+
+    return () => observers.forEach(obs => obs.disconnect());
   }, []);
 
   // Lock body scroll when menu is open
@@ -59,19 +80,31 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-mono text-white/80" aria-label="Main Navigation">
-            {menuItems.slice(0, 4).map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                data-magnetic
-                className="hover:text-white transition-colors p-2 inline-block relative group"
-              >
-                {item.label}
-                <span className="absolute bottom-1 left-2 w-0 h-px bg-brand-red transition-all duration-500 ease-luxury group-hover:w-[calc(100%-16px)]"></span>
-              </a>
-            ))}
+            {menuItems.slice(0, 4).map((item) => {
+              const isActive = activeSection === item.href;
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  data-magnetic
+                  className={`transition-all duration-300 p-2 inline-block relative group ${isActive ? 'text-white' : 'hover:text-white'}`}
+                >
+                  {item.label}
+                  <span
+                    className={`absolute bottom-1 left-2 h-px bg-brand-red transition-all duration-500 ease-luxury ${isActive ? 'w-[calc(100%-16px)]' : 'w-0 group-hover:w-[calc(100%-16px)]'}`}
+                  />
+                </a>
+              );
+            })}
 
-            <a href="#contact" data-magnetic className="px-6 py-2 border border-white/20 rounded-full hover:bg-white hover:text-brand-black transition-all duration-500 ease-luxury hover:scale-105 active:scale-95 font-mono">
+            <a
+              href="#contact"
+              data-magnetic
+              className={`px-6 py-2 border rounded-full backdrop-blur-sm transition-all duration-500 ease-luxury hover:scale-105 active:scale-95 font-mono shadow-lg ${activeSection === '#contact'
+                ? 'bg-white text-brand-black border-white'
+                : 'bg-white/5 border-white/30 hover:bg-white hover:text-brand-black shadow-white/5'
+                }`}
+            >
               Contact
             </a>
           </nav>

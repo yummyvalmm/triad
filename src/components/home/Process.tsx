@@ -1,29 +1,7 @@
 import React from 'react';
 import { CornerDownRight } from 'lucide-react';
 import Reveal from '../ui/Reveal';
-
-const steps = [
-  {
-    number: '01',
-    title: 'Discovery & Strategy',
-    description: 'Choose the plan that best fits your needs. From a solid foundation to a fully optimized solution.'
-  },
-  {
-    number: '02',
-    title: 'Design & Prototyping',
-    description: 'Our designers bring your vision to life with wireframes and prototypes, focusing on an engaging user experience.'
-  },
-  {
-    number: '03',
-    title: 'Development & Integration',
-    description: 'We transform approved designs into high-quality, responsive code using modern frameworks and best practices.'
-  },
-  {
-    number: '04',
-    title: 'Launch & Support',
-    description: 'After testing and final approvals, we launch the site and provide ongoing support to ensure your digital presence remains flawless.'
-  }
-];
+import { processSteps } from '../../data';
 
 const Process: React.FC = () => {
   return (
@@ -37,9 +15,10 @@ const Process: React.FC = () => {
             <div className="sticky top-32">
               <Reveal>
                 <h2 id="process-heading" className="text-[12vw] lg:text-[7vw] leading-[1.1] font-bold tracking-tighter text-brand-black mb-12">
-                  Our process
+                  Our<br />process
                 </h2>
               </Reveal>
+              <div className="absolute -left-6 top-0 bottom-0 w-px bg-gradient-to-b from-brand-accent/30 via-transparent to-transparent hidden lg:block" />
               <Reveal delay={100}>
                 <p className="text-gray-500 text-lg md:text-xl leading-relaxed mb-16 max-w-md">
                   Our four-step process keeps you informed and involved at every stage, ensuring the final result meets your goals and resonates with your audience.
@@ -47,8 +26,8 @@ const Process: React.FC = () => {
               </Reveal>
 
               <Reveal delay={200} width="fit-content">
-                <a href="#contact" data-magnetic className="inline-flex items-center gap-3 text-xl font-medium text-brand-black hover:text-brand-red transition-colors group p-4 -ml-4 rounded-lg">
-                  <CornerDownRight className="w-6 h-6 text-brand-red mt-1 group-hover:translate-x-1 transition-transform" />
+                <a href="#contact" data-magnetic className="inline-flex items-center gap-3 text-xl font-medium text-brand-black hover:text-brand-accent transition-colors group p-4 -ml-4 rounded-lg">
+                  <CornerDownRight className="w-6 h-6 text-brand-accent mt-1 group-hover:translate-x-1 transition-transform" />
                   Schedule a consultation
                 </a>
               </Reveal>
@@ -57,7 +36,7 @@ const Process: React.FC = () => {
 
           {/* Right Column - Steps (Ordered List) */}
           <ol className="flex-1 flex flex-col">
-            {steps.map((step, index) => (
+            {processSteps.map((step, index) => (
               <Reveal key={index} delay={index * 100} width="100%">
                 <li>
                   <article
@@ -65,7 +44,7 @@ const Process: React.FC = () => {
                   >
                     {/* Number */}
                     <div className="shrink-0 md:ml-4">
-                      <span className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-sm font-bold text-gray-900 group-hover:border-brand-red group-hover:bg-brand-red group-hover:text-white transition-all duration-300">
+                      <span className="w-14 h-14 rounded-full border border-gray-100 bg-gray-50/50 flex items-center justify-center text-base font-bold text-gray-400 group-hover:border-brand-accent group-hover:bg-brand-accent group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-brand-accent/20">
                         {step.number}
                       </span>
                     </div>
@@ -81,7 +60,7 @@ const Process: React.FC = () => {
                     </div>
 
                     {/* Corner Accent (Top Right) */}
-                    <div className="absolute top-8 right-4 md:right-0 w-3 h-3 border-t-2 border-r-2 border-brand-red opacity-0 group-hover:opacity-100 transition-all duration-300" aria-hidden="true" />
+                    <div className="absolute top-8 right-4 md:right-0 w-3 h-3 border-t-2 border-r-2 border-brand-accent opacity-0 group-hover:opacity-100 transition-all duration-300" aria-hidden="true" />
                   </article>
                 </li>
               </Reveal>

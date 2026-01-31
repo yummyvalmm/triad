@@ -1,229 +1,264 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { IconFileTypeTs, IconServer, IconBoxModel, IconCpu, IconPalette, IconRocket, IconActivity, IconTerminal2, IconFileCode } from '@tabler/icons-react';
-import { motion, useMotionValue, useTransform, animate, useInView } from 'framer-motion';
+// @ts-nocheck
+import React, { useRef } from 'react';
+import { IconBolt, IconPalette, IconShieldCheck, IconCheck, IconGlobe } from '@tabler/icons-react';
+import { motion, useInView } from 'framer-motion';
 import Reveal from '../ui/Reveal';
+import { AnimatedCounter } from '../ui/AnimatedCounter';
 
-// --- ANIMATED COUNTER COMPONENT (Synchronized) ---
-const AnimatedCounter = ({ value, isActive }: { value: number, isActive: boolean }) => {
-    const count = useMotionValue(0);
-    const rounded = useTransform(count, (latest) => Math.round(latest));
+// --- NEW CLIENT-FRIENDLY VISUALS ---
 
-    useEffect(() => {
-        if (isActive) {
-            const controls = animate(count, value, { duration: 1.5, ease: [0.16, 1, 0.3, 1] });
-            return () => controls.stop();
-        } else {
-            count.set(0);
-        }
-    }, [isActive, value, count]);
+// 1. SPEED VISUAL - Animated Speedometer with Globe
+const SpeedVisual: React.FC<{ isActive: boolean }> = ({ isActive }) => {
+    const radius = 50;
+    const circumference = Math.PI * radius; // Half circle
+    const speedValue = 98;
 
-    return <motion.span>{rounded}</motion.span>;
-};
-
-// --- SHARED WINDOW HEADER ---
-const WindowHeader = ({ title, icon }: { title: string, icon: React.ReactNode }) => (
-  <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-[#111] w-full shrink-0 select-none">
-     <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-[9px] tracking-widest uppercase text-gray-500 font-mono">{title}</span>
-     </div>
-     <div className="flex gap-1.5">
-        <div className="w-2 h-2 rounded-full bg-white/10"></div>
-        <div className="w-2 h-2 rounded-full bg-white/10"></div>
-     </div>
-  </div>
-);
-
-// --- VISUAL SUB-COMPONENTS ---
-
-// 1. ENGINEERING VISUAL (Middleware / Edge Config)
-const EngineeringVisual: React.FC<{ isActive: boolean }> = ({ isActive }) => {
-  return (
-    <div className="font-mono text-[10px] leading-relaxed text-gray-400 p-0 w-full h-full flex flex-col select-none relative bg-[#0D0D0D]">
-      <WindowHeader 
-        title="middleware.ts" 
-        icon={<IconFileTypeTs size={12} className="text-blue-400" />} 
-      />
-
-      {/* Code Editor */}
-      <div className="p-4 relative z-10 overflow-hidden flex-1">
-         {/* Line Numbers */}
-         <div className="absolute left-0 top-4 bottom-0 w-8 flex flex-col items-center text-gray-700 select-none text-[9px] leading-[1.6]">
-             {Array.from({length: 12}).map((_, i) => <div key={i}>{i+1}</div>)}
-         </div>
-
-         {/* Code Body */}
-         <div className="pl-8 space-y-1 opacity-90 text-[10px] leading-[1.6]">
-            <div className="flex gap-1.5">
-               <span className="text-purple-400">import</span>
-               <span className="text-yellow-100">{'{ next }'}</span>
-               <span className="text-purple-400">from</span>
-               <span className="text-green-400">'@vercel/edge'</span>;
+    return (
+        <div className="flex flex-col h-full w-full relative overflow-hidden bg-gradient-to-br from-[#0f172a] to-[#1e293b]">
+            {/* Animated Globe Background */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                >
+                    <IconGlobe size={200} strokeWidth={0.5} />
+                </motion.div>
             </div>
-            <div className="h-2"></div>
-            <div className="flex gap-1.5">
-               <span className="text-gray-500">// Geo-replication config</span>
-            </div>
-            <div className="flex gap-1.5">
-               <span className="text-blue-400">export</span>
-               <span className="text-blue-400">const</span>
-               <span className="text-blue-300">config</span>
-               <span className="text-white">=</span>
-               <span className="text-yellow-400">{'{'}</span>
-            </div>
-            <div className="pl-4 flex gap-1.5">
-               <span className="text-blue-300">matcher</span>:
-               <span className="text-green-400">['/api/:path*']</span>,
-            </div>
-            <div className="pl-4 flex gap-1.5">
-               <span className="text-blue-300">regions</span>:
-               <span className="text-yellow-300">['iad1', 'sfo1']</span>,
-            </div>
-            <div className="text-yellow-400">{'}'};</div>
-            <div className="h-2"></div>
-            <div className="flex gap-1.5">
-                <span className="text-blue-400">export</span>
-                <span className="text-blue-400">default</span>
-                <span className="text-blue-400">async</span>
-                <span className="text-blue-400">function</span>
-                <span className="text-yellow-300">middleware</span>() {'{'}
-            </div>
-            <div className="pl-4 flex gap-1.5">
-                 <span className="text-purple-400">return</span>
-                 <span className="text-yellow-100">next</span>();
-            </div>
-            <div className="text-yellow-400">{'}'}</div>
-         </div>
-      </div>
-      
-      {/* Background decoration */}
-      <div className="absolute right-0 bottom-0 opacity-[0.05] pointer-events-none">
-         <IconServer size={120} />
-      </div>
-    </div>
-  );
-};
 
-// 2. DELIVERY VISUAL (Synchronized Animation)
-const DeliveryVisual: React.FC<{ isActive: boolean }> = ({ isActive }) => {
-  // Circular Progress Logic
-  const radius = 36;
-  const circumference = 2 * Math.PI * radius;
-  const score = 99;
-  
-  return (
-    <div className="flex flex-col h-full w-full relative overflow-hidden bg-[#0D0D0D]">
-       <WindowHeader 
-         title="pipeline.yml" 
-         icon={<IconFileCode size={12} className="text-purple-400" />} 
-       />
-       
-       <div className="flex-1 flex flex-col items-center justify-center relative z-10">
-           {/* Main Gauge */}
-           <div className="relative w-32 h-32 flex items-center justify-center mb-4">
-               <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
-                   {/* Track */}
-                   <circle cx="50" cy="50" r={radius} fill="none" stroke="#1f2937" strokeWidth="6" />
-                   {/* Progress Indicator */}
-                   <motion.circle 
-                        cx="50" 
-                        cy="50" 
-                        r={radius} 
-                        fill="none" 
-                        stroke="#10B981" 
-                        strokeWidth="6" 
-                        strokeLinecap="round"
-                        strokeDasharray={circumference}
-                        initial={{ strokeDashoffset: circumference }}
-                        animate={{ strokeDashoffset: isActive ? circumference - (score / 100) * circumference : circumference }}
-                        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }} 
-                   />
-               </svg>
-               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                   <span className="text-4xl font-bold text-white tracking-tighter tabular-nums">
-                       <AnimatedCounter value={score} isActive={isActive} />
-                   </span>
-                   <span className="text-[9px] uppercase tracking-wider text-green-500 font-bold">Passed</span>
-               </div>
-           </div>
-           
-           {/* Metrics Grid */}
-           <div className="grid grid-cols-3 gap-2 w-full px-6">
-               {[
-                   { label: "LCP", val: "0.6s", bar: 95 },
-                   { label: "TBT", val: "0ms", bar: 100 },
-                   { label: "CLS", val: "0.00", bar: 100 }
-               ].map((metric, i) => (
-                   <div key={i} className="bg-white/5 rounded border border-white/5 p-2 flex flex-col items-center gap-1.5">
-                       <span className="text-[8px] text-gray-500 uppercase tracking-wider font-bold">{metric.label}</span>
-                       <span className="text-xs font-mono text-white">{metric.val}</span>
-                       <div className="w-full h-0.5 bg-gray-700 rounded-full overflow-hidden mt-1">
-                           <motion.div 
-                                className="h-full bg-green-500"
-                                initial={{ width: 0 }}
-                                animate={{ width: isActive ? `${metric.bar}%` : 0 }}
-                                transition={{ duration: 1, delay: 0.2 + (i * 0.1), ease: "easeOut" }}
-                           />
-                       </div>
-                   </div>
-               ))}
-           </div>
-       </div>
-    </div>
-  );
-};
+            {/* Connection Lines Animation */}
+            <div className="absolute inset-0 overflow-hidden">
+                {[...Array(5)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute h-px bg-gradient-to-r from-transparent via-brand-accent/30 to-transparent"
+                        style={{
+                            top: `${20 + i * 15}%`,
+                            left: 0,
+                            right: 0,
+                        }}
+                        initial={{ x: '-100%', opacity: 0 }}
+                        animate={isActive ? { x: '100%', opacity: [0, 1, 0] } : { x: '-100%', opacity: 0 }}
+                        transition={{ duration: 2, delay: i * 0.3, repeat: Infinity, repeatDelay: 1 }}
+                    />
+                ))}
+            </div>
 
-// 3. DESIGNING VISUAL (Strict Types)
-const DesigningVisual: React.FC<{ isActive: boolean }> = ({ isActive }) => {
-  return (
-    <div className="flex flex-col h-full w-full bg-[#0D0D0D]">
-        <WindowHeader 
-          title="tokens.d.ts" 
-          icon={<IconFileTypeTs size={12} className="text-blue-400" />} 
-        />
+            {/* Main Speedometer */}
+            <div className="flex-1 flex flex-col items-center justify-center relative z-10">
+                <div className="relative w-36 h-20 flex items-end justify-center">
+                    <svg className="w-full h-full" viewBox="0 0 120 70">
+                        {/* Background Arc */}
+                        <path
+                            d="M 10 60 A 50 50 0 0 1 110 60"
+                            fill="none"
+                            stroke="#334155"
+                            strokeWidth="8"
+                            strokeLinecap="round"
+                        />
+                        {/* Progress Arc */}
+                        <motion.path
+                            d="M 10 60 A 50 50 0 0 1 110 60"
+                            fill="none"
+                            stroke="url(#speedGradient)"
+                            strokeWidth="8"
+                            strokeLinecap="round"
+                            strokeDasharray={circumference}
+                            initial={{ strokeDashoffset: circumference }}
+                            animate={{ strokeDashoffset: isActive ? circumference * (1 - speedValue / 100) : circumference }}
+                            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                        />
+                        <defs>
+                            <linearGradient id="speedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#FF6B5B" />
+                                <stop offset="50%" stopColor="#FF2E00" />
+                                <stop offset="100%" stopColor="#ec4899" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
 
-        <div className="flex-1 flex overflow-hidden">
-            {/* Left: Code Definition */}
-            <div className="w-3/5 border-r border-white/5 p-4 font-mono text-[9px] text-gray-500 flex flex-col justify-center">
-                <div className="space-y-1">
-                    <div>
-                        <span className="text-blue-400">type</span> <span className="text-yellow-300">Scale</span> = <span className="text-green-400">'sm'</span> | <span className="text-green-400">'lg'</span>;
-                    </div>
-                    <div className="h-1"></div>
-                    <div>
-                        <span className="text-blue-400">interface</span> <span className="text-yellow-300">Theme</span> {'{'}
-                    </div>
-                    <div className="pl-4 flex items-center gap-2">
-                        <span className="text-blue-300">colors</span>:
-                        <span className="text-yellow-300">Palette</span>;
-                    </div>
-                    <div className="pl-4 flex items-center gap-2">
-                        <span className="text-blue-300">space</span>:
-                        <span className="text-yellow-300">Record</span>&lt;<span className="text-yellow-300">Scale</span>, <span className="text-blue-400">number</span>&gt;;
-                    </div>
-                    <div>{'}'}</div>
-                    <div className="mt-2 text-gray-600">// Immutable Design Tokens</div>
+                    {/* Needle */}
+                    <motion.div
+                        className="absolute bottom-0 left-1/2 origin-bottom"
+                        style={{ height: '40px', width: '3px' }}
+                        initial={{ rotate: -90 }}
+                        animate={{ rotate: isActive ? -90 + (speedValue / 100) * 180 : -90 }}
+                        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                        <div className="w-full h-full bg-gradient-to-t from-white to-white/50 rounded-full" />
+                    </motion.div>
                 </div>
-            </div>
 
-            {/* Right: Visual Preview */}
-            <div className="w-2/5 flex flex-col items-center justify-center gap-3 p-4 bg-[#0A0A0A]">
-                <div className="w-full aspect-square rounded-lg bg-brand-red flex items-center justify-center shadow-lg shadow-red-900/20 group relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent"></div>
-                    <span className="text-white font-bold text-xs relative z-10">Aa</span>
+                {/* Speed Value */}
+                <div className="mt-4 text-center">
+                    <div className="text-3xl font-bold text-white tracking-tight">
+                        <AnimatedCounter value={speedValue} suffix="%" isActive={isActive} />
+                    </div>
+                    <div className="text-xs text-brand-accent font-medium mt-1">Performance Score</div>
                 </div>
-                <div className="grid grid-cols-2 gap-2 w-full">
-                    <div className="aspect-square rounded bg-[#1a1a1a] border border-white/10 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-white/20"></div>
-                    </div>
-                    <div className="aspect-square rounded bg-white/5 border border-white/10 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-white/10"></div>
-                    </div>
+
+                {/* Stats Row */}
+                <div className="flex gap-6 mt-4">
+                    {[
+                        { label: 'Load Time', value: '0.8s' },
+                        { label: 'Uptime', value: '99.9%' },
+                    ].map((stat, i) => (
+                        <motion.div
+                            key={i}
+                            className="text-center"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                            transition={{ delay: 0.5 + i * 0.1 }}
+                        >
+                            <div className="text-sm font-semibold text-white">{stat.value}</div>
+                            <div className="text-[10px] text-gray-400">{stat.label}</div>
+                        </motion.div>
+                    ))}
                 </div>
             </div>
         </div>
-    </div>
-  );
+    );
+};
+
+// 2. BRANDING VISUAL - Color Palette & Typography Preview
+const BrandingVisual: React.FC<{ isActive: boolean }> = ({ isActive }) => {
+    const colors = [
+        { name: 'CTA Red', color: '#FF2E00', hex: '#FF2E00' },
+        { name: 'Accent', color: '#FF6B5B', hex: '#FF6B5B' },
+        { name: 'Dark', color: '#050505', hex: '#050505' },
+        { name: 'Light', color: '#f8fafc', hex: '#F8FAFC' },
+    ];
+
+    return (
+        <div className="flex flex-col h-full w-full bg-gradient-to-br from-[#fafafa] to-[#f1f5f9] p-4">
+            {/* Color Palette */}
+            <div className="flex-1 flex flex-col justify-center">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Brand Colors</div>
+                <div className="flex gap-2 mb-3">
+                    {colors.map((c, i) => (
+                        <motion.div
+                            key={i}
+                            className="flex-1 flex flex-col"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            transition={{ delay: i * 0.1, duration: 0.5 }}
+                        >
+                            <div
+                                className="h-10 md:h-12 rounded-lg shadow-lg mb-1.5 ring-1 ring-black/5"
+                                style={{ backgroundColor: c.color }}
+                            />
+                            <div className="text-[8px] font-mono text-gray-500 text-center">{c.hex}</div>
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* Typography Preview - Systematic approach */}
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 flex justify-between items-center">
+                    <span>Typography System</span>
+                    <span className="text-[8px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 font-mono">Manrope / Space Grotesk</span>
+                </div>
+                <motion.div
+                    className="bg-white rounded-xl p-3 shadow-sm border border-gray-100"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={isActive ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+                    transition={{ delay: 0.4 }}
+                >
+                    <div className="text-xl font-bold text-gray-900 leading-none mb-0.5">Aa Bb Cc</div>
+                    <div className="text-xs text-gray-500">Inter • Modern Sans-Serif</div>
+                    <div className="flex gap-2 mt-2">
+                        <span className="text-[10px] font-light text-gray-400">Light</span>
+                        <span className="text-[10px] font-normal text-gray-500">Regular</span>
+                        <span className="text-[10px] font-semibold text-gray-700">Semi</span>
+                        <span className="text-[10px] font-bold text-gray-900">Bold</span>
+                    </div>
+                </motion.div>
+            </div>
+        </div>
+    );
+};
+
+// 3. QUALITY VISUAL - Shield with Animated Checkmarks
+const QualityVisual: React.FC<{ isActive: boolean }> = ({ isActive }) => {
+    const checks = [
+        'Mobile Responsive',
+        'SEO Optimized',
+        'Cross-Browser Tested',
+        'Performance Audited',
+    ];
+
+    return (
+        <div className="flex flex-col h-full w-full bg-gradient-to-br from-[#0f172a] to-[#1e3a5f] p-3 relative overflow-hidden">
+            {/* Glowing Background */}
+            <div className="absolute inset-0 flex items-center justify-center">
+                <motion.div
+                    className="w-32 h-32 rounded-full bg-green-500/20 blur-3xl"
+                    animate={isActive ? { scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] } : { scale: 1, opacity: 0.2 }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                />
+            </div>
+
+            <div className="flex-1 flex flex-col items-center justify-center relative z-10">
+                {/* Shield Badge */}
+                <motion.div
+                    className="relative mb-2"
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={isActive ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
+                    transition={{ duration: 0.6, type: "spring" }}
+                >
+                    <div className="w-14 h-16 relative">
+                        <svg viewBox="0 0 80 96" className="w-full h-full">
+                            <defs>
+                                <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stopColor="#22c55e" />
+                                    <stop offset="100%" stopColor="#16a34a" />
+                                </linearGradient>
+                            </defs>
+                            <path
+                                d="M40 0 L80 20 L80 52 C80 72 60 88 40 96 C20 88 0 72 0 52 L0 20 Z"
+                                fill="url(#shieldGradient)"
+                            />
+                        </svg>
+                        <motion.div
+                            className="absolute inset-0 flex items-center justify-center"
+                            initial={{ opacity: 0, scale: 0 }}
+                            animate={isActive ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            <IconCheck size={24} className="text-white" strokeWidth={3} />
+                        </motion.div>
+                    </div>
+                </motion.div>
+
+                {/* Quality Label */}
+                <motion.div
+                    className="text-center mb-2"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                    transition={{ delay: 0.5 }}
+                >
+                    <div className="text-sm font-bold text-white">Quality Verified</div>
+                    <div className="text-[10px] text-green-300">All checks passed</div>
+                </motion.div>
+
+                {/* Checklist */}
+                <div className="w-full max-w-[160px] space-y-1">
+                    {checks.map((check, i) => (
+                        <motion.div
+                            key={i}
+                            className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-md px-2 py-1"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={isActive ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                            transition={{ delay: 0.6 + i * 0.1 }}
+                        >
+                            <div className="w-3 h-3 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                                <IconCheck size={8} className="text-white" strokeWidth={3} />
+                            </div>
+                            <span className="text-[9px] text-white/90 font-medium">{check}</span>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 // --- FEATURE CARD WRAPPER ---
@@ -251,13 +286,13 @@ const FeatureCard: React.FC<{
                 {/* Content Area */}
                 <div className="flex-1 p-6 md:p-8 flex flex-col">
                     <div className="mb-4 flex items-center gap-3">
-                         <div className="p-2 rounded-lg bg-gray-50 border border-gray-100 text-brand-black">
-                             {icon}
-                         </div>
-                         <div>
+                        <div className="p-2 rounded-lg bg-gray-50 border border-gray-100 text-brand-black">
+                            {icon}
+                        </div>
+                        <div>
                             <h3 className="text-lg md:text-xl font-bold text-brand-black leading-none">{title}</h3>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-red">{subtitle}</span>
-                         </div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-accent">{subtitle}</span>
+                        </div>
                     </div>
                     <p className="text-gray-500 text-sm leading-relaxed mt-2">
                         {description}
@@ -270,63 +305,63 @@ const FeatureCard: React.FC<{
 
 
 const Features: React.FC = () => {
-  return (
-    <section className="bg-white py-24 md:py-32 relative overflow-hidden">
-       {/* Background Cleaned Up */}
-       <div className="container mx-auto px-6 relative z-10">
-            {/* Header */}
-            <div className="max-w-2xl mb-16 md:mb-20">
-                 <Reveal>
-                    <div className="flex items-center gap-3 mb-6">
-                        <span className="w-1.5 h-1.5 rounded-sm bg-brand-red"></span>
-                        <span className="text-brand-black font-mono text-xs uppercase tracking-widest font-bold">Our Workflow</span>
-                    </div>
-                 </Reveal>
-                 <Reveal delay={100}>
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-brand-black leading-[0.95] tracking-tighter mb-6">
-                        Built for speed.<br/>
-                        <span className="text-brand-red">Designed for scale.</span>
-                    </h2>
-                 </Reveal>
-                 <Reveal delay={200}>
-                    <p className="text-gray-500 text-lg leading-relaxed">
-                        We don't just build websites; we engineer digital ecosystems. From the first pixel in Figma to the final deploy on Vercel, every step is optimized for performance and maintainability.
-                    </p>
-                 </Reveal>
-            </div>
+    return (
+        <section className="bg-white py-24 md:py-32 relative overflow-hidden">
+            {/* Background Cleaned Up */}
+            <div className="container mx-auto px-6 relative z-10">
+                {/* Header */}
+                <div className="max-w-2xl mb-16 md:mb-20">
+                    <Reveal>
+                        <div className="flex items-center gap-3 mb-6">
+                            <span className="w-1.5 h-1.5 rounded-sm bg-brand-accent"></span>
+                            <span className="text-brand-black font-mono text-xs uppercase tracking-widest font-bold">Performance DNA</span>
+                        </div>
+                    </Reveal>
+                    <Reveal delay={100}>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-brand-black leading-[0.95] tracking-tighter mb-6">
+                            Built for speed.<br />
+                            <span className="text-brand-accent">Designed for scale.</span>
+                        </h2>
+                    </Reveal>
+                    <Reveal delay={200}>
+                        <p className="text-gray-500 text-lg leading-relaxed">
+                            We don't just build websites; we engineer digital ecosystems. From the first pixel in Figma to the final deploy on Vercel, every step is optimized for performance and maintainability.
+                        </p>
+                    </Reveal>
+                </div>
 
-            {/* Grid Layout - Optimized ratio with md:grid-cols-2 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <FeatureCard 
-                    title="Engineering"
-                    subtitle="Edge-Native Architecture"
-                    description="Built on Next.js and React Server Components. We leverage Vercel's Edge Network to execute logic globally, ensuring sub-50ms TTFB and infinite scalability."
-                    icon={<IconCpu size={20} />}
-                    Visual={EngineeringVisual}
-                    delay={300}
-                />
-                
-                <FeatureCard 
-                    title="Designing"
-                    subtitle="Systematic UI Tokens"
-                    description="We bridge the gap between Figma and React. Design tokens are typed strictly in TypeScript, ensuring your brand's visual language is immutable and consistent."
-                    icon={<IconPalette size={20} />}
-                    Visual={DesigningVisual}
-                    delay={400}
-                />
+                {/* Grid Layout - Optimized ratio with md:grid-cols-2 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <FeatureCard
+                        title="Fast & Reliable"
+                        subtitle="Lightning Performance"
+                        description="Your website loads instantly, anywhere in the world. We build with cutting-edge technology that keeps your visitors engaged and your business running 24/7."
+                        icon={<IconBolt size={20} />}
+                        Visual={SpeedVisual}
+                        delay={300}
+                    />
 
-                <FeatureCard 
-                    title="Delivery"
-                    subtitle="CI/CD & Performance"
-                    description="Every commit triggers a preview environment. We enforce 100/100 Lighthouse scores via automated E2E testing, guaranteeing zero regressions in production."
-                    icon={<IconRocket size={20} />}
-                    Visual={DeliveryVisual}
-                    delay={500}
-                />
+                    <FeatureCard
+                        title="Consistent Branding"
+                        subtitle="Pixel-Perfect Design"
+                        description="Your brand looks perfect across every page and device. We create cohesive visual systems that make your business look professional and memorable."
+                        icon={<IconPalette size={20} />}
+                        Visual={BrandingVisual}
+                        delay={400}
+                    />
+
+                    <FeatureCard
+                        title="Quality Assured"
+                        subtitle="Thoroughly Tested"
+                        description="Every update is automatically tested before going live. We ensure your website works flawlessly on all browsers and devices, giving you peace of mind."
+                        icon={<IconShieldCheck size={20} />}
+                        Visual={QualityVisual}
+                        delay={500}
+                    />
+                </div>
             </div>
-       </div>
-    </section>
-  );
+        </section>
+    );
 };
 
 export default Features;

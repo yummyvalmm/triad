@@ -55,11 +55,11 @@ const Pricing: React.FC = () => {
                             </ul>
 
                             <Link
-                                to="/checkout"
+                                to="/consultation"
                                 data-magnetic
                                 className="block w-full py-5 bg-brand-black text-white text-center font-bold rounded-xl hover:bg-brand-red transition-all duration-300 uppercase tracking-widest text-sm shadow-lg group-hover:shadow-brand-red/20 cursor-pointer flex items-center justify-center gap-2"
                             >
-                                Start Your Project
+                                Book A Consultation
                             </Link>
                             <p className="text-center text-xs text-gray-400 mt-4">100% Satisfaction Guarantee</p>
                         </div>

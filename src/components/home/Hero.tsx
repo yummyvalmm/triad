@@ -25,11 +25,10 @@ const Hero: React.FC = () => {
           src="/images/hero.webp"
           onLoad={() => setHeroImageLoaded(true)}
           alt="Abstract portrait with neon lighting representing digital design"
-          width="2864"
-          height="1600"
+          width={2864}
+          height={1600}
           className={`w-full h-full object-cover opacity-50 transition-all duration-[2000ms] ease-out will-change-transform ${isRevealStarted ? 'scale-100' : 'scale-110'}`}
           loading="eager"
-          // @ts-ignore
           fetchPriority="high"
           style={{
             backfaceVisibility: 'hidden',
@@ -41,7 +40,7 @@ const Hero: React.FC = () => {
           }}
         />
         {/* Adjusted overlay for the red aesthetic using mix-blend-overlay on the gradient instead of the image */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-brand-red/50 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/50 to-brand-red/40 mix-blend-overlay"></div>
       </div>
 
       {/* Content */}
@@ -50,20 +49,22 @@ const Hero: React.FC = () => {
         {/* Top Meta Data - Slide Down Entrance */}
         <div className="flex justify-between items-start overflow-hidden">
           <div
-            className={`text-sm font-mono tracking-widest text-brand-red transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isRevealStarted ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+            className={`text-sm font-mono tracking-widest text-brand-accent transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isRevealStarted ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
             style={{ transitionDelay: '100ms' }}
           >
-            © 21-26
+            EST. 2021
           </div>
 
           <div
-            className={`hidden md:flex flex-col gap-2 text-right text-sm font-mono text-gray-300 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isRevealStarted ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+            className={`hidden md:flex flex-col gap-2 text-right text-sm font-mono text-white transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isRevealStarted ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
             style={{ transitionDelay: '200ms' }}
           >
-            <span>UX/UI Design</span>
-            <span>Development</span>
-            <span>Brand Identity</span>
-            <span>Ongoing Support</span>
+            <div className="backdrop-blur-md bg-black/30 rounded-lg px-4 py-3 border border-white/10">
+              <span className="block">UX/UI Design</span>
+              <span className="block">Development</span>
+              <span className="block">Brand Identity</span>
+              <span className="block">Ongoing Support</span>
+            </div>
           </div>
         </div>
 
@@ -91,7 +92,7 @@ const Hero: React.FC = () => {
             {/* Sub Title 'Design Studio' - Masked Reveal Up */}
             <div className="overflow-hidden pb-[4vw] -mb-[4vw]">
               <span
-                className={`block text-[8vw] md:text-[6vw] leading-none font-display font-bold tracking-tighter text-brand-red transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isRevealStarted ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'}`}
+                className={`block text-[8vw] md:text-[6vw] leading-none font-display font-bold tracking-tighter text-brand-accent transform transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${isRevealStarted ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'}`}
                 style={{ transitionDelay: '600ms', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
               >
                 Design Studio

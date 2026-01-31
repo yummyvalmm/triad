@@ -1,10 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
-import CustomCursor from '../components/ui/CustomCursor';
-import SmoothScroll from '../components/ui/SmoothScroll';
-import Preloader from '../components/ui/Preloader';
+import { Navbar, Footer } from '../components/layout';
+import { CustomCursor, SmoothScroll, Preloader } from '../components/ui';
 import { useUIStore } from '../store/useUIStore';
 
 const MainLayout: React.FC = () => {

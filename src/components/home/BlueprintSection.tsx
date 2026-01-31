@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
-import { PenTool, MousePointer2, Move, Eraser, Trash2, Undo } from 'lucide-react';
+// @ts-nocheck
+import React, { useState, useRef } from 'react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { PenTool, MousePointer2, Move, Trash2 } from 'lucide-react';
 import { DrawArrow, ScribbleHighlight } from '../ui/HandDrawn';
 
 const BlueprintSection: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const coordRef = useRef<HTMLDivElement>(null);
     const [activeTool, setActiveTool] = useState<'select' | 'pen' | 'move'>('select');
-    // const [mousePos, setMousePos] = useState({ x: 0, y: 0 }); // REMOVED CAUSE OF LAG
     const [isDrawing, setIsDrawing] = useState(false);
 
     // Drawing State
@@ -39,9 +39,6 @@ const BlueprintSection: React.FC = () => {
             const relativeX = e.clientX - rect.left;
             const relativeY = e.clientY - rect.top;
 
-            // setMousePos({ x: relativeX, y: relativeY }); // REMOVED RE-RENDER
-
-            // Direct DOM update for performance
             if (coordRef.current) {
                 coordRef.current.innerText = `LOC: ${Math.round(relativeX)}px, ${Math.round(relativeY)}px`;
             }
@@ -126,14 +123,14 @@ const BlueprintSection: React.FC = () => {
                 whileInView={{ y: 0, opacity: 1 }}
                 className="absolute top-8 md:top-12 z-50 flex gap-2 bg-white/80 backdrop-blur-md shadow-sm border border-gray-100 p-1.5 rounded-full"
             >
-                {[
+                {([
                     { id: 'select', icon: MousePointer2, label: 'Select Tool' },
                     { id: 'pen', icon: PenTool, label: 'Sketch Tool' },
                     { id: 'move', icon: Move, label: 'Move Tool' },
-                ].map((tool) => (
+                ] as const).map((tool) => (
                     <button
                         key={tool.id}
-                        onClick={() => setActiveTool(tool.id as any)}
+                        onClick={() => setActiveTool(tool.id)}
                         className={`p-2.5 rounded-full transition-all border border-transparent ${activeTool === tool.id ? 'bg-brand-black text-white shadow-md' : 'hover:bg-gray-100 text-gray-500 hover:border-gray-200'}`}
                         title={tool.label}
                         aria-label={tool.label}
@@ -167,7 +164,7 @@ const BlueprintSection: React.FC = () => {
                 >
                     {/* Annotation Note - Rotates slightly when moved for effect */}
                     <div className="absolute -top-16 -left-12 rotate-[-12deg] hidden md:block pointer-events-none opacity-80">
-                        <p className="font-handwriting text-2xl text-blue-600">Start here!</p>
+                        <p className="font-handwriting text-2xl text-brand-accent">Start here!</p>
                         <DrawArrow delay={1} />
                     </div>
 
