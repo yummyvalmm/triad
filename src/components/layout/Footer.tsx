@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Instagram, Twitter, Linkedin, Dribbble, Loader2, Check, AlertCircle, Mail, Clock } from 'lucide-react';
+import { ArrowRight, Instagram, Facebook, Linkedin, Send, Loader2, Check, AlertCircle, Mail, Clock } from 'lucide-react';
 import Reveal from '../ui/Reveal';
 import { useIntersectionObserver } from '../../hooks';
 import { CONFIG } from '../../constants';
@@ -129,7 +129,7 @@ const Footer: React.FC = () => {
                                                 <div className="hidden sm:block w-px h-3 bg-gray-700"></div>
                                                 <div className="flex items-center gap-1.5 text-gray-500">
                                                     <Clock size={12} />
-                                                    <span>Reply &lt; 2h</span>
+                                                    <span>Reply &lt; 24h</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -280,7 +280,7 @@ const Footer: React.FC = () => {
                                 </Reveal>
                             </div>
                             <div className="flex gap-3">
-                                {[Twitter, Instagram, Linkedin, Dribbble].map((Icon, i) => (
+                                {[Facebook, Instagram, Linkedin, Send].map((Icon, i) => (
                                     <Reveal key={i} forceTrigger={isVisible} delay={700 + (i * 50)}>
                                         <a
                                             href="#"
