@@ -11,7 +11,7 @@ const Consultation: React.FC = () => {
         email: '',
         company: '',
         projectType: 'E-commerce',
-        budget: '$1k - $5k',
+        budget: 'Under $3k',
         message: ''
     });
 
@@ -140,7 +140,7 @@ const Consultation: React.FC = () => {
                                                 type="text"
                                                 name="name"
                                                 required
-                                                placeholder="John Doe"
+                                                placeholder="Your full name"
                                                 className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-red text-brand-black transition-all font-medium placeholder:text-gray-300"
                                                 onChange={handleChange}
                                             />
@@ -153,7 +153,7 @@ const Consultation: React.FC = () => {
                                                 type="email"
                                                 name="email"
                                                 required
-                                                placeholder="john@example.com"
+                                                placeholder="Your email address"
                                                 className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-red text-brand-black transition-all font-medium placeholder:text-gray-300"
                                                 onChange={handleChange}
                                             />
@@ -167,7 +167,7 @@ const Consultation: React.FC = () => {
                                         <input
                                             type="text"
                                             name="company"
-                                            placeholder="Acme Corp"
+                                            placeholder="Your business or company"
                                             className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-red text-brand-black transition-all font-medium placeholder:text-gray-300"
                                             onChange={handleChange}
                                         />
@@ -202,10 +202,9 @@ const Consultation: React.FC = () => {
                                                     className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-red text-brand-black transition-all font-medium appearance-none relative z-10"
                                                     onChange={handleChange}
                                                 >
-                                                    <option className="text-brand-black">$1k - $5k</option>
-                                                    <option className="text-brand-black">$5k - $15k</option>
-                                                    <option className="text-brand-black">$15k - $50k</option>
-                                                    <option className="text-brand-black">$50k+</option>
+                                                    <option className="text-brand-black">Under $3k</option>
+                                                    <option className="text-brand-black">$3k to $10k</option>
+                                                    <option className="text-brand-black">$10k+</option>
                                                 </select>
                                                 <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 z-20 pointer-events-none group-focus-within:text-brand-red transition-colors" />
                                             </div>

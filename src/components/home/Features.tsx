@@ -25,20 +25,20 @@ const SpeedVisual: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                 </motion.div>
             </div>
 
-            {/* Connection Lines Animation */}
+            {/* Connection Lines Animation - More Dense and Bright */}
             <div className="absolute inset-0 overflow-hidden">
-                {[...Array(5)].map((_, i) => (
+                {[...Array(10)].map((_, i) => (
                     <motion.div
                         key={i}
-                        className="absolute h-px bg-gradient-to-r from-transparent via-brand-accent/30 to-transparent"
+                        className="absolute h-px bg-gradient-to-r from-transparent via-brand-accent/60 to-transparent"
                         style={{
-                            top: `${20 + i * 15}%`,
+                            top: `${10 + i * 8}%`,
                             left: 0,
                             right: 0,
                         }}
                         initial={{ x: '-100%', opacity: 0 }}
                         animate={isActive ? { x: '100%', opacity: [0, 1, 0] } : { x: '-100%', opacity: 0 }}
-                        transition={{ duration: 2, delay: i * 0.3, repeat: Infinity, repeatDelay: 1 }}
+                        transition={{ duration: 2, delay: i * 0.2, repeat: Infinity, repeatDelay: 0.5 }}
                     />
                 ))}
             </div>
@@ -93,7 +93,7 @@ const SpeedVisual: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                     <div className="text-3xl font-bold text-white tracking-tight">
                         <AnimatedCounter value={speedValue} suffix="%" isActive={isActive} />
                     </div>
-                    <div className="text-xs text-brand-accent font-medium mt-1">Performance Score</div>
+                    <div className="text-xs text-brand-accent font-medium mt-1">Performance</div>
                 </div>
 
                 {/* Stats Row */}

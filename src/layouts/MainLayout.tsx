@@ -36,6 +36,14 @@ const MainLayout: React.FC = () => {
 
             {loading && <Preloader onComplete={() => setLoading(false)} />}
 
+            {/* Skip to main content link for accessibility */}
+            <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-6 focus:py-3 focus:bg-brand-red focus:text-white focus:rounded-lg focus:shadow-brand focus:outline-none"
+            >
+                Skip to main content
+            </a>
+
             <Navbar />
 
             {/* 
@@ -47,6 +55,7 @@ const MainLayout: React.FC = () => {
         - transform: translateZ(0): Force hardware acceleration to fix Safari border-radius clipping bug.
       */}
             <main
+                id="main-content"
                 className="relative z-10 bg-white shadow-2xl rounded-b-[50px] overflow-hidden"
                 style={{
                     marginBottom: footerHeight,

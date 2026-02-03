@@ -52,7 +52,7 @@ const Hero: React.FC = () => {
             className={`text-sm font-mono tracking-widest text-brand-accent transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${isRevealStarted ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
             style={{ transitionDelay: '100ms' }}
           >
-            EST. 2021
+            EST. 2020
           </div>
 
           <div
@@ -62,7 +62,7 @@ const Hero: React.FC = () => {
             <div className="backdrop-blur-md bg-black/30 rounded-lg px-4 py-3 border border-white/10">
               <span className="block">UX/UI Design</span>
               <span className="block">Development</span>
-              <span className="block">Brand Identity</span>
+              <span className="block">Brand Guidelines</span>
               <span className="block">Ongoing Support</span>
             </div>
           </div>

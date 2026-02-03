@@ -73,9 +73,9 @@ const Navbar: React.FC = () => {
               window.scrollTo(0, 0);
               setMobileMenuOpen(false);
             }}
-            aria-label="Triad Home"
+            aria-label="Lyne Home"
           >
-            TRIAD<span className="text-brand-red transition-transform duration-300 group-hover:scale-200 inline-block origin-bottom">.</span>
+            LYNE<span className="text-brand-red transition-transform duration-300 group-hover:scale-200 inline-block origin-bottom">.</span>
           </a>
 
           {/* Desktop Menu */}
@@ -186,7 +186,7 @@ const Navbar: React.FC = () => {
               >
                 <div className="w-full h-px bg-white/10 mb-2"></div>
                 <div className="flex justify-between w-full">
-                  <span>© 2024 Triad Studio</span>
+                  <span>© 2024 Lyne Studio</span>
                   <span>Global Edge Network</span>
                 </div>
               </motion.div>

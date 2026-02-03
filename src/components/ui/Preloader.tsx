@@ -57,7 +57,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
               className="flex items-baseline will-change-[transform,opacity,filter]"
             >
               <h1 className="text-[15vw] md:text-[12vw] font-display font-bold leading-none select-none flex items-baseline tracking-tighter">
-                <span className="text-white mix-blend-screen">TRIAD</span>
+                <span className="text-white mix-blend-screen">LYNE</span>
                 <span className="text-brand-black">.</span>
               </h1>
             </motion.div>

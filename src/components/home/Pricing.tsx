@@ -33,7 +33,7 @@ const Pricing: React.FC = () => {
                                     <span className="text-6xl md:text-7xl font-bold text-brand-black tracking-tighter">$799</span>
                                     <span className="text-gray-400 font-medium text-lg">/ one-time</span>
                                 </div>
-                                <p className="text-xs text-gray-400 mt-2 uppercase tracking-wide font-bold">No monthly subscriptions</p>
+                                <p className="text-xs text-gray-400 mt-2 uppercase tracking-wide font-bold"></p>
                             </div>
 
                             <ul className="space-y-5 mb-10">
@@ -70,7 +70,7 @@ const Pricing: React.FC = () => {
                         <Reveal delay={200}>
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-red/10 text-brand-red rounded-full mb-6 border border-brand-red/20">
                                 <Sparkles size={14} />
-                                <span className="text-xs font-bold uppercase tracking-widest">The Triad Experience</span>
+                                <span className="text-xs font-bold uppercase tracking-widest">The Lyne Experience</span>
                             </div>
                         </Reveal>
 

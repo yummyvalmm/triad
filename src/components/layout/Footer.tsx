@@ -119,12 +119,12 @@ const Footer: React.FC = () => {
                                             <div className="flex items-center gap-2 mb-1">
                                                 <h3 className="font-serif text-xl md:text-2xl text-white tracking-wide">Htet Aung Linn</h3>
                                             </div>
-                                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-red mb-3">Lead Strategist</p>
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-red mb-3">Project Manager</p>
 
                                             <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-xs text-gray-400 font-mono">
                                                 <div className="flex items-center gap-1.5 hover:text-white transition-colors cursor-default">
                                                     <Mail size={12} />
-                                                    <span>example@triad.com</span>
+                                                    <span>htetaunglinn.dev@gmail.com</span>
                                                 </div>
                                                 <div className="hidden sm:block w-px h-3 bg-gray-700"></div>
                                                 <div className="flex items-center gap-1.5 text-gray-500">
@@ -175,7 +175,7 @@ const Footer: React.FC = () => {
                                                     onChange={handleChange}
                                                     disabled={status === 'submitting'}
                                                     className="bg-transparent border-b border-gray-700 py-2 text-white focus:outline-none focus:border-brand-red transition-colors disabled:opacity-50 disabled:cursor-not-allowed placeholder-gray-700 text-sm md:text-base"
-                                                    placeholder="triad@example.com"
+                                                    placeholder="lyne@example.com"
                                                     required
                                                 />
                                             </div>
@@ -247,7 +247,7 @@ const Footer: React.FC = () => {
                         <div className="mb-8 md:mb-0">
                             <Reveal forceTrigger={isVisible} delay={500}>
                                 <h3 className="text-[12vw] md:text-[8vw] leading-none font-bold tracking-tighter text-white">
-                                    TRIAD<span className="text-brand-red transition-transform duration-300 group-hover:scale-150 inline-block origin-bottom">.</span>
+                                    LYNE<span className="text-brand-red transition-transform duration-300 group-hover:scale-150 inline-block origin-bottom">.</span>
                                 </h3>
                             </Reveal>
                         </div>
@@ -297,7 +297,7 @@ const Footer: React.FC = () => {
 
                     <div className="mt-8 flex flex-col md:flex-row justify-between text-xs text-gray-600">
                         <Reveal forceTrigger={isVisible} delay={900}>
-                            <p>© 2024 Triad Digital Studio. All rights reserved.</p>
+                            <p>© 2024 Lyne Digital Studio. All rights reserved.</p>
                         </Reveal>
                         <Reveal forceTrigger={isVisible} delay={950}>
                             <nav className="flex gap-6 mt-4 md:mt-0" aria-label="Legal">
