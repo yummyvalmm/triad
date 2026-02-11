@@ -6,6 +6,7 @@ export { default as Hero } from './Hero';
 export { default as Stats } from './Stats';
 export { default as Features } from './Features';
 export { default as Process } from './Process';
+export { default as Clients } from './Clients';
 export { default as Portfolio } from './Portfolio';
 export { default as Services } from './Services';
 export { default as Testimonial } from './Testimonial';

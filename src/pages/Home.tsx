@@ -4,7 +4,7 @@ import {
     Stats,
     Features,
     Process,
-    Portfolio,
+    Clients,
     Services,
     Testimonial,
     Pricing,
@@ -18,7 +18,7 @@ const Home: React.FC = () => {
             <Stats />
             <Features />
             <Process />
-            <Portfolio />
+            <Clients />
             <Services />
             <Testimonial />
             <Pricing />
